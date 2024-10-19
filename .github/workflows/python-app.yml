@@ -36,4 +36,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Execute Python script
-      run: python pro_extract.py  # Ensure 'pro_extract.py' exists and is in the right location
+      run: python pto_extract.py  # Ensure 'pro_extract.py' exists and is in the right location
