@@ -40,10 +40,9 @@ def extract_athlete_data(link, athlete_info):
 
 def write_athletes_data_to_file(athletes, sort_by='Rank'):
     # Open the file in write mode (will create the file if it doesn't exist)
-    with open('athletes.txt', 'a') as file:
         sorted_athletes = sorted(
             athletes, key=lambda x: extract_height(x[sort_by]))
-
+        
         # Calculate max lengths for formatting once
         max_lengths = {
             'Name': max(len('Name'), *(len(athlete['Name']) for athlete in athletes)),
@@ -51,7 +50,7 @@ def write_athletes_data_to_file(athletes, sort_by='Rank'):
             'Height': max(len('Height'), *(len(athlete['Height']) for athlete in athletes)),
             'Rank': max(len('Rank'), *(len(str(athlete['Rank'])) for athlete in athletes))
         }
-
+        
         # Prepare and write headers once
         header = (
             f"{'Name'.ljust(max_lengths['Name'])} "
@@ -59,19 +58,22 @@ def write_athletes_data_to_file(athletes, sort_by='Rank'):
             f"{'Height'.ljust(max_lengths['Height'])} "
             f"{'Rank'.ljust(max_lengths['Rank'])}\n"
         )
-        file.write(header)
-        print(header.strip())  # Strip newline when printing to console
+        try:    
+            with open('athletes.txt', 'a') as file:
+            file.write(header)
+            print(header.strip())  # Strip newline when printing to console
 
-        # Loop through and write each athlete's data
-        for athlete in sorted_athletes:
-            row = (
-                f"{athlete['Name'].ljust(max_lengths['Name'])} "
-                f"{athlete['Age'].ljust(max_lengths['Age'])} "
-                f"{athlete['Height'].ljust(max_lengths['Height'])} "
-                f"{str(athlete['Rank']).ljust(max_lengths['Rank'])}\n"
-            )
-            file.write(row)
-            print(row.strip())  # Strip newline when printing to console
+            for athlete in sorted_athletes:
+                row = (
+                    f"{athlete['Name'].ljust(max_lengths['Name'])} "
+                    f"{athlete['Age'].ljust(max_lengths['Age'])} "
+                    f"{athlete['Height'].ljust(max_lengths['Height'])} "
+                    f"{str(athlete['Rank']).ljust(max_lengths['Rank'])}\n"
+                )
+                file.write(row)
+                print(row.strip())  # Strip newline when printing to console
+        except Exception as e:
+            print(f"Error writing to file: {e}")
 
 
 def fetch_athletes(url):
