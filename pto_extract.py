@@ -37,6 +37,46 @@ def extract_athlete_data(link, athlete_info):
                 )] = attr_value.text.strip()
         print('*', end='', flush=True)
 
+def write_athletes_data_to_file(athletes, sort_by='Rank'):
+    # Open the file in write mode (will create the file if it doesn't exist)
+    with open('athletes.txt', 'w') as file:
+        sorted_athletes = sorted(
+            athletes, key=lambda x: extract_height(x[sort_by]))
+
+        # Calculate max lengths for formatting
+        max_name_length = max(len('Name'), *(len(athlete['Name']) for athlete in athletes))
+        max_age_length = max(len('Age'), *(len(athlete['Age']) for athlete in athletes))
+        max_height_length = max(len('Height'), *(len(athlete['Height']) for athlete in athletes))
+        max_rank_length = max(len('Rank'), *(len(str(athlete['Rank'])) for athlete in athletes))
+
+        # Write the headers to the file
+        file.write(
+            f"{'Name'.ljust(max_name_length)} "
+            f"{'Age'.ljust(max_age_length)} "
+            f"{'Height'.ljust(max_height_length)} "
+            f"{'Rank'.ljust(max_rank_length)}\n"
+        )
+        print(
+                f"{'Name'.ljust(max_name_length)} "
+                f"{'Age'.ljust(max_age_length)} "
+                f"{'Height'.ljust(max_height_length)} "
+                f"{'Rank'.ljust(max_rank_length)}"
+        )
+
+        # Write each athlete's data to the file
+        for athlete in sorted_athletes:
+            file.write(
+                f"{athlete['Name'].ljust(max_name_length)} "
+                f"{athlete['Age'].ljust(max_age_length)} "
+                f"{athlete['Height'].ljust(max_height_length)} "
+                f"{str(athlete['Rank']).ljust(max_rank_length)}\n"
+            )
+            print(
+                f"{athlete['Name'].ljust(max_name_length)} "
+                f"{athlete['Age'].ljust(max_age_length)} "
+                f"{athlete['Height'].ljust(max_height_length)} "
+                f"{str(athlete['Rank']).ljust(max_rank_length)}\n"
+            )
 
 def print_athletes_data(athletes, sort_by='Rank'):
     sorted_athletes = sorted(
@@ -88,7 +128,7 @@ def fetch_athletes(url):
                     extract_athlete_data(href, athlete_info)
                 athletes.append(athlete_info)
         print()
-        print_athletes_data(athletes)
+        write_athletes_data_to_file(athletes)
 
     else:
         print(
