@@ -37,73 +37,41 @@ def extract_athlete_data(link, athlete_info):
                 )] = attr_value.text.strip()
         print('*', end='', flush=True)
 
+
 def write_athletes_data_to_file(athletes, sort_by='Rank'):
     # Open the file in write mode (will create the file if it doesn't exist)
-    with open('athletes.txt', 'w') as file:
+    with open('athletes.txt', 'a') as file:
         sorted_athletes = sorted(
             athletes, key=lambda x: extract_height(x[sort_by]))
 
-        # Calculate max lengths for formatting
-        max_name_length = max(len('Name'), *(len(athlete['Name']) for athlete in athletes))
-        max_age_length = max(len('Age'), *(len(athlete['Age']) for athlete in athletes))
-        max_height_length = max(len('Height'), *(len(athlete['Height']) for athlete in athletes))
-        max_rank_length = max(len('Rank'), *(len(str(athlete['Rank'])) for athlete in athletes))
+        # Calculate max lengths for formatting once
+        max_lengths = {
+            'Name': max(len('Name'), *(len(athlete['Name']) for athlete in athletes)),
+            'Age': max(len('Age'), *(len(athlete['Age']) for athlete in athletes)),
+            'Height': max(len('Height'), *(len(athlete['Height']) for athlete in athletes)),
+            'Rank': max(len('Rank'), *(len(str(athlete['Rank'])) for athlete in athletes))
+        }
 
-        # Write the headers to the file
-        file.write(
-            f"{'Name'.ljust(max_name_length)} "
-            f"{'Age'.ljust(max_age_length)} "
-            f"{'Height'.ljust(max_height_length)} "
-            f"{'Rank'.ljust(max_rank_length)}\n"
+        # Prepare and write headers once
+        header = (
+            f"{'Name'.ljust(max_lengths['Name'])} "
+            f"{'Age'.ljust(max_lengths['Age'])} "
+            f"{'Height'.ljust(max_lengths['Height'])} "
+            f"{'Rank'.ljust(max_lengths['Rank'])}\n"
         )
-        print(
-                f"{'Name'.ljust(max_name_length)} "
-                f"{'Age'.ljust(max_age_length)} "
-                f"{'Height'.ljust(max_height_length)} "
-                f"{'Rank'.ljust(max_rank_length)}"
-        )
+        file.write(header)
+        print(header.strip())  # Strip newline when printing to console
 
-        # Write each athlete's data to the file
+        # Loop through and write each athlete's data
         for athlete in sorted_athletes:
-            file.write(
-                f"{athlete['Name'].ljust(max_name_length)} "
-                f"{athlete['Age'].ljust(max_age_length)} "
-                f"{athlete['Height'].ljust(max_height_length)} "
-                f"{str(athlete['Rank']).ljust(max_rank_length)}\n"
+            row = (
+                f"{athlete['Name'].ljust(max_lengths['Name'])} "
+                f"{athlete['Age'].ljust(max_lengths['Age'])} "
+                f"{athlete['Height'].ljust(max_lengths['Height'])} "
+                f"{str(athlete['Rank']).ljust(max_lengths['Rank'])}\n"
             )
-            print(
-                f"{athlete['Name'].ljust(max_name_length)} "
-                f"{athlete['Age'].ljust(max_age_length)} "
-                f"{athlete['Height'].ljust(max_height_length)} "
-                f"{str(athlete['Rank']).ljust(max_rank_length)}\n"
-            )
-
-def print_athletes_data(athletes, sort_by='Rank'):
-    sorted_athletes = sorted(
-        athletes, key=lambda x: extract_height(x[sort_by]))
-
-    max_name_length = max(
-        len('Name'), *(len(athlete['Name']) for athlete in athletes))
-    max_age_length = max(
-        len('Age'), *(len(athlete['Age']) for athlete in athletes))
-    max_height_length = max(
-        len('Height'), *(len(athlete['Height']) for athlete in athletes))
-    max_rank_length = max(len('Rank'), *(len(str(athlete['Rank']))
-                          for athlete in athletes))
-
-    print(
-        f"{'Name'.ljust(max_name_length)} "
-        f"{'Age'.ljust(max_age_length)} "
-        f"{'Height'.ljust(max_height_length)} "
-        f"{'Rank'.ljust(max_rank_length)}"
-    )
-    for athlete in sorted_athletes:
-        print(
-            f"{athlete['Name'].ljust(max_name_length)} "
-            f"{athlete['Age'].ljust(max_age_length)} "
-            f"{athlete['Height'].ljust(max_height_length)} "
-            f"{str(athlete['Rank']).ljust(max_rank_length)}"
-        )
+            file.write(row)
+            print(row.strip())  # Strip newline when printing to console
 
 
 def fetch_athletes(url):
@@ -128,7 +96,7 @@ def fetch_athletes(url):
                     extract_athlete_data(href, athlete_info)
                 athletes.append(athlete_info)
         print()
-        write_athletes_data_to_file(athletes)
+        write_athletes_data_to_file(athletes, 'Height')
 
     else:
         print(
