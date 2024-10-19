@@ -37,3 +37,5 @@ jobs:
 
     - name: Execute Python script
       run: python pto_extract.py  # Ensure 'pro_extract.py' exists and is in the right location
+    - name: Print working directory
+      run: pwd
