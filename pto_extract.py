@@ -59,19 +59,19 @@ def write_athletes_data_to_file(athletes, sort_by='Rank'):
             f"{'Rank'.ljust(max_lengths['Rank'])}\n"
         )
         try:    
-            with open('athletes.txt', 'a') as file:
-            file.write(header)
-            print(header.strip())  # Strip newline when printing to console
-
-            for athlete in sorted_athletes:
-                row = (
-                    f"{athlete['Name'].ljust(max_lengths['Name'])} "
-                    f"{athlete['Age'].ljust(max_lengths['Age'])} "
-                    f"{athlete['Height'].ljust(max_lengths['Height'])} "
-                    f"{str(athlete['Rank']).ljust(max_lengths['Rank'])}\n"
-                )
-                file.write(row)
-                print(row.strip())  # Strip newline when printing to console
+            with open('athletes.txt', 'w') as file:
+                file.write(header)
+                print(header.strip())  # Strip newline when printing to console
+                
+                for athlete in sorted_athletes:
+                        row = (
+                            f"{athlete['Name'].ljust(max_lengths['Name'])} "
+                            f"{athlete['Age'].ljust(max_lengths['Age'])} "
+                            f"{athlete['Height'].ljust(max_lengths['Height'])} "
+                            f"{str(athlete['Rank']).ljust(max_lengths['Rank'])}\n"
+                        )
+                        file.write(row)
+                        print(row.strip())  # Strip newline when printing to console
         except Exception as e:
             print(f"Error writing to file: {e}")
 
